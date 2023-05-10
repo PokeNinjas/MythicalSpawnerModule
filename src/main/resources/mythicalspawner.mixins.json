@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.mythicalnetwork.mythicalspawner.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "CommandsMixin",
+    "PersistentEntitySectionManagerMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
