@@ -1,4 +1,4 @@
-package com.mythicalnetwork.mythicalspawner
+package com.mythicalnetwork.mythicalspawner.spawner
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder

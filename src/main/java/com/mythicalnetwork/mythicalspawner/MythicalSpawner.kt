@@ -5,6 +5,13 @@ import com.cobblemon.mod.common.api.events.pokemon.PokemonCapturedEvent
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.logging.LogUtils
+import com.mythicalnetwork.mythicalspawner.events.ServerEvents
+import com.mythicalnetwork.mythicalspawner.events.SpawnHandler
+import com.mythicalnetwork.mythicalspawner.force.MythicalSpawnChanceData
+import com.mythicalnetwork.mythicalspawner.force.MythicalSpawnChanceListener
+import com.mythicalnetwork.mythicalspawner.spawner.DefaultSpawnDataListener
+import com.mythicalnetwork.mythicalspawner.spawner.MythicalSpawnerAbilityListener
+import com.mythicalnetwork.mythicalspawner.spawner.MythicalSpawnerJsonListener
 import dev.architectury.event.EventResult
 import dev.architectury.event.events.common.EntityEvent
 import dev.architectury.event.events.common.TickEvent
@@ -19,7 +26,6 @@ import net.minecraft.world.entity.player.Player
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
 import java.util.*
-import java.util.function.BiFunction
 
 
 /**

@@ -1,11 +1,13 @@
-package com.mythicalnetwork.mythicalspawner
+package com.mythicalnetwork.mythicalspawner.spawner
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import com.mythicalnetwork.mythicalspawner.BLOCKPOS_PAIR_CODEC
+import com.mythicalnetwork.mythicalspawner.INT_PAIR_CODEC
 import net.minecraft.core.BlockPos
 import java.util.*
 
-class PokespawnerDataHolder(
+class SpawnerDataHolder(
     val species: String,
     val aspects: List<AspectChanceData>,
     val area: Optional<Pair<BlockPos, BlockPos>>,
@@ -17,9 +19,9 @@ class PokespawnerDataHolder(
         return "PokespawnerDataHolder(species=$species, aspects=$aspects, area=$area, dimension=$dimension, biome=$biome, time=$time, weather=$weather)"
     }
     companion object {
-        val SPAWN_DATA:  MutableMap<String, PokespawnerDataHolder> = mutableMapOf()
-        val ACTIVE_DATA: MutableMap<String, PokespawnerDataHolder> = mutableMapOf()
-        val CODEC: Codec<PokespawnerDataHolder> = RecordCodecBuilder.create { instance ->
+        val SPAWN_DATA:  MutableMap<String, SpawnerDataHolder> = mutableMapOf()
+        val ACTIVE_DATA: MutableMap<String, SpawnerDataHolder> = mutableMapOf()
+        val CODEC: Codec<SpawnerDataHolder> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codec.STRING.fieldOf("species").forGetter { it.species },
                 AspectChanceData.CODEC.listOf().fieldOf("aspects").forGetter { it.aspects },
@@ -29,7 +31,7 @@ class PokespawnerDataHolder(
                 INT_PAIR_CODEC.optionalFieldOf("time").forGetter { it.time },
                 Codec.STRING.optionalFieldOf("weather").forGetter { it.weather }
             ).apply(instance) { species, aspects, area, dimension, biome, time, weather ->
-                PokespawnerDataHolder(
+                SpawnerDataHolder(
                     species,
                     aspects,
                     area,
@@ -40,7 +42,7 @@ class PokespawnerDataHolder(
                 )
             }
         }
-        fun getSpeciesData(species: String): List<PokespawnerDataHolder> {
+        fun getSpeciesData(species: String): List<SpawnerDataHolder> {
             return ACTIVE_DATA.filter { it.value.species == species }.values.toList()
         }
 

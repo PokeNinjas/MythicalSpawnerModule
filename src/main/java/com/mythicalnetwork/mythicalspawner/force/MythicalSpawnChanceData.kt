@@ -1,10 +1,12 @@
-package com.mythicalnetwork.mythicalspawner
+package com.mythicalnetwork.mythicalspawner.force
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import com.mythicalnetwork.mythicalspawner.MythicalSpawner
+import com.mythicalnetwork.mythicalspawner.events.SpawnHandler
 import net.minecraft.core.BlockPos
 import net.minecraft.server.MinecraftServer
 import net.minecraft.world.entity.player.Player

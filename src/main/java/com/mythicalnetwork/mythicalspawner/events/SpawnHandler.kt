@@ -1,18 +1,17 @@
-package com.mythicalnetwork.mythicalspawner
+package com.mythicalnetwork.mythicalspawner.events
 
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
 import com.cobblemon.mod.common.pokemon.Pokemon
-import eu.pb4.placeholders.api.ParserContext
+import com.mythicalnetwork.mythicalspawner.spawner.AbilityModifierDataHolder
+import com.mythicalnetwork.mythicalspawner.MythicalSpawner
+import com.mythicalnetwork.mythicalspawner.spawner.SpawnerDataHolder
 import eu.pb4.placeholders.api.PlaceholderContext
 import eu.pb4.placeholders.api.Placeholders
 import eu.pb4.placeholders.api.TextParserUtils
-import eu.pb4.placeholders.api.node.DirectTextNode
 import eu.pb4.placeholders.api.node.TextNode
-import eu.pb4.placeholders.api.parsers.TextParserV1
 import net.minecraft.Util
 import net.minecraft.network.chat.Component
-import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import java.util.*
@@ -129,7 +128,7 @@ object SpawnHandler {
 
 
     fun handleCustomSpawns(pokemonEntity: PokemonEntity, pokemon: Pokemon) {
-        val speciesData = PokespawnerDataHolder.getSpeciesData(pokemon.species.showdownId())
+        val speciesData = SpawnerDataHolder.getSpeciesData(pokemon.species.showdownId())
         speciesData.forEach() { data ->
             var shouldModify: Boolean = true
             data.area.ifPresent { area ->

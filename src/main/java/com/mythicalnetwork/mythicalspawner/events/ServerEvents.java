@@ -1,8 +1,6 @@
-package com.mythicalnetwork.mythicalspawner;
+package com.mythicalnetwork.mythicalspawner.events;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.mythicalnetwork.mythicalspawner.EntityEvents;
-import com.mythicalnetwork.mythicalspawner.SpawnHandler;
 
 public class ServerEvents {
     public static void init() {

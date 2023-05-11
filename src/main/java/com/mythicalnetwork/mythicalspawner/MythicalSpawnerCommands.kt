@@ -7,18 +7,16 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.SuggestionProvider
+import com.mythicalnetwork.mythicalspawner.spawner.SpawnerDataHolder
 import dev.architectury.event.events.common.CommandRegistrationEvent
 import eu.pb4.placeholders.api.PlaceholderContext
 import eu.pb4.placeholders.api.Placeholders
 import me.lucko.fabric.api.permissions.v0.Permissions
-import net.luckperms.api.LuckPermsProvider
 import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.MutableComponent
-import net.minecraft.world.entity.player.Player
 
 class MythicalSpawnerCommands {
     companion object {
@@ -57,7 +55,7 @@ class MythicalSpawnerCommands {
             private val CMD: MythicalSpawnerActivateCommand = MythicalSpawnerActivateCommand
             private var SUGGESTION_PROVIDER: SuggestionProvider<CommandSourceStack> =
                 SuggestionProvider { context, builder ->
-                    return@SuggestionProvider SharedSuggestionProvider.suggest(PokespawnerDataHolder.SPAWN_DATA.keys, builder)
+                    return@SuggestionProvider SharedSuggestionProvider.suggest(SpawnerDataHolder.SPAWN_DATA.keys, builder)
                 }
 
             fun register(dispatcher: CommandDispatcher<CommandSourceStack>): ArgumentBuilder<CommandSourceStack, *> {
@@ -68,13 +66,13 @@ class MythicalSpawnerCommands {
                             Permissions.check(it, "mythicalspawner.activatespawner")
                         }.executes { context ->
                             val name = StringArgumentType.getString(context, "name")
-                            val data: PokespawnerDataHolder? = PokespawnerDataHolder.SPAWN_DATA.getOrDefault(name, null)
+                            val data: SpawnerDataHolder? = SpawnerDataHolder.SPAWN_DATA.getOrDefault(name, null)
                             if (data == null) {
                                 context.source.sendFailure(
                                     net.minecraft.network.chat.Component.literal("No object found with that name!").withStyle { s -> s.withColor(ChatFormatting.RED) })
                                 return@executes 0
                             }
-                            PokespawnerDataHolder.activateDataHolder(name)
+                            SpawnerDataHolder.activateDataHolder(name)
                             context.source.sendSuccess(
                                 net.minecraft.network.chat.Component.literal("[MythicalSpawner - Activated $name]")
                                     .withStyle { s -> s.withColor(ChatFormatting.GREEN) }, true
@@ -97,7 +95,7 @@ class MythicalSpawnerCommands {
             private val CMD: MythicalSpawnerDeactivateCommand = MythicalSpawnerDeactivateCommand
             private var SUGGESTION_PROVIDER: SuggestionProvider<CommandSourceStack> =
                 SuggestionProvider { _, builder ->
-                    return@SuggestionProvider SharedSuggestionProvider.suggest(PokespawnerDataHolder.ACTIVE_DATA.keys, builder)
+                    return@SuggestionProvider SharedSuggestionProvider.suggest(SpawnerDataHolder.ACTIVE_DATA.keys, builder)
                 }
 
             fun register(dispatcher: CommandDispatcher<CommandSourceStack>): ArgumentBuilder<CommandSourceStack, *> {
@@ -108,13 +106,13 @@ class MythicalSpawnerCommands {
                             Permissions.check(it, "mythicalspawner.deactivatespawner")
                         }.executes { context ->
                             val name = StringArgumentType.getString(context, "name")
-                            val data: PokespawnerDataHolder? = PokespawnerDataHolder.SPAWN_DATA.getOrDefault(name, null)
+                            val data: SpawnerDataHolder? = SpawnerDataHolder.SPAWN_DATA.getOrDefault(name, null)
                             if (data == null) {
                                 context.source.sendFailure(
                                     net.minecraft.network.chat.Component.literal("No object found with that name!").withStyle { s -> s.withColor(ChatFormatting.RED) })
                                 return@executes 0
                             }
-                            PokespawnerDataHolder.deactivateDataHolder(name)
+                            SpawnerDataHolder.deactivateDataHolder(name)
                             context.source.sendSuccess(
                                 net.minecraft.network.chat.Component.literal("[MythicalSpawner - Deactivated $name]")
                                     .withStyle { s -> s.withColor(ChatFormatting.RED) }, true

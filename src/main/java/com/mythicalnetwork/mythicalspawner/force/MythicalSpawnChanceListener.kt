@@ -1,9 +1,10 @@
-package com.mythicalnetwork.mythicalspawner
+package com.mythicalnetwork.mythicalspawner.force
 
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.JsonOps
+import com.mythicalnetwork.mythicalspawner.MythicalSpawner
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener

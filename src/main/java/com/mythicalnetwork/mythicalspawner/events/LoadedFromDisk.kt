@@ -1,4 +1,4 @@
-package com.mythicalnetwork.mythicalspawner
+package com.mythicalnetwork.mythicalspawner.events
 
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.Level

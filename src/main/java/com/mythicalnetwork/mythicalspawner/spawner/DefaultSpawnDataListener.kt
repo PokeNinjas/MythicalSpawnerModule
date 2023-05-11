@@ -1,8 +1,9 @@
-package com.mythicalnetwork.mythicalspawner
+package com.mythicalnetwork.mythicalspawner.spawner
 
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.mythicalnetwork.mythicalspawner.MythicalSpawner
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener
@@ -25,7 +26,7 @@ class DefaultSpawnDataListener : SimpleJsonResourceReloadListener(GSON, "default
             MythicalSpawner.LOGGER.info("Loaded default spawns for $id: $defaultList")
             defaultList.forEach { id ->
                 MythicalSpawner.LOGGER.info("Adding $id to default spawns for $id")
-                PokespawnerDataHolder.activateDataHolder(id)
+                SpawnerDataHolder.activateDataHolder(id)
             }
         }
     }

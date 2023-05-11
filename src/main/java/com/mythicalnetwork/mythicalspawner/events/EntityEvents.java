@@ -1,4 +1,4 @@
-package com.mythicalnetwork.mythicalspawner;
+package com.mythicalnetwork.mythicalspawner.events;
 
 import org.quiltmc.qsl.base.api.event.Event;
 

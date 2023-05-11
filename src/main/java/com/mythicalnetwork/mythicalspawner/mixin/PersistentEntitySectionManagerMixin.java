@@ -1,6 +1,6 @@
 package com.mythicalnetwork.mythicalspawner.mixin;
 
-import com.mythicalnetwork.mythicalspawner.EntityEvents;
+import com.mythicalnetwork.mythicalspawner.events.EntityEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.entity.EntityAccess;
 import net.minecraft.world.level.entity.PersistentEntitySectionManager;
