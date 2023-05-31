@@ -4,7 +4,6 @@
   "package": "com.mythicalnetwork.mythicalspawner.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "CommandsMixin",
     "PersistentEntitySectionManagerMixin"
   ],
   "client": [

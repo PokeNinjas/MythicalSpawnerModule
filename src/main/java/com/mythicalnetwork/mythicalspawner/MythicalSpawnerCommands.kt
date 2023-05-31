@@ -7,16 +7,21 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.SuggestionProvider
+import com.mythicalnetwork.mythicalspawner.events.SpawnHandler
 import com.mythicalnetwork.mythicalspawner.spawner.SpawnerDataHolder
 import dev.architectury.event.events.common.CommandRegistrationEvent
 import eu.pb4.placeholders.api.PlaceholderContext
 import eu.pb4.placeholders.api.Placeholders
+import eu.pb4.placeholders.api.TextParserUtils
+import eu.pb4.placeholders.api.node.TextNode
 import me.lucko.fabric.api.permissions.v0.Permissions
 import net.minecraft.ChatFormatting
+import net.minecraft.Util
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.network.chat.Component
+import java.util.HashMap
 
 class MythicalSpawnerCommands {
     companion object {
@@ -32,22 +37,71 @@ class MythicalSpawnerCommands {
                 }.executes { context ->
                     val player: String = MythicalSpawner.LAST_CAPTURED_TRAINER?.name?.string ?: "No one"
                     if(player == "No one"){
-                        val message: Component? = Placeholders.parseText(Component.literal(MythicalSpawner.CONFIG.lastLegendNotCaptureMessage()), PlaceholderContext.of(context.source.player))
+                        var message: TextNode? = TextParserUtils.formatNodes(MythicalSpawner.CONFIG.lastLegendNotCaptureMessage())
+                        val placeholderMap: HashMap<String, Component> = HashMap()
+                        placeholderMap["last_captured_trainer"] = Component.literal(player)
+                        placeholderMap["last_captured_pokemon"] = MythicalSpawner.LAST_LEGENDARY_SPAWNED?.species?.name?.let {
+                            Component.literal(
+                                it
+                            )
+                        } ?: Component.literal("No Pokemon")
+                        placeholderMap["last_captured_biome"] = MythicalSpawner.LAST_CAPTURED_BIOME?.let {
+                            Component.literal(
+                                it
+                            )
+                        } ?: Component.literal("No Biome")
+                        placeholderMap["pokemon_aspects"] = MythicalSpawner.LAST_LEGENDARY_SPAWNED?.aspects?.let {
+                            Component.literal(
+                                SpawnHandler.parseAspects(it.toString())
+                            )
+                        } ?: Component.literal("")
+                        placeholderMap["time_since_last_spawn"] = Component.literal(
+                            SpawnHandler.formatTime(
+                                MythicalSpawner.TIME_SINCE_LEGENDARY_SPAWN.toLong()
+                            )
+                        )
+                        message = Placeholders.parseNodes(message, Placeholders.ALT_PLACEHOLDER_PATTERN_CUSTOM, placeholderMap)
+                        val component: Component = message.toText(PlaceholderContext.of(context.source.player).asParserContext(), true)
                         if (message != null) {
-                            context.source.sendSuccess(message, false)
+                            context.source.sendSuccess(component, false)
                         } else {
                             context.source.sendFailure(Component.literal("The message is formatted incorrectly."))
                         }
                     } else {
-                        val message: Component? = Placeholders.parseText(Component.literal(MythicalSpawner.CONFIG.lastLegendCapturedMessage()), PlaceholderContext.of(context.source.player))
+                        var message: TextNode? = TextParserUtils.formatNodes(MythicalSpawner.CONFIG.lastLegendCapturedMessage())
+                        val placeholderMap: HashMap<String, Component> = HashMap()
+                        placeholderMap["last_captured_trainer"] = Component.literal(player)
+                        placeholderMap["last_captured_pokemon"] = MythicalSpawner.LAST_LEGENDARY_SPAWNED?.species?.name?.let {
+                            Component.literal(
+                                it
+                            )
+                        } ?: Component.literal("No Pokemon")
+                        placeholderMap["last_captured_biome"] = MythicalSpawner.LAST_CAPTURED_BIOME?.let {
+                            Component.literal(
+                                it
+                            )
+                        } ?: Component.literal("No Biome")
+                        placeholderMap["pokemon_aspects"] = MythicalSpawner.LAST_LEGENDARY_SPAWNED?.aspects?.let {
+                            Component.literal(
+                                SpawnHandler.parseAspects(it.toString())
+                            )
+                        } ?: Component.literal("")
+                        placeholderMap["time_since_last_spawn"] = Component.literal(
+                            SpawnHandler.formatTime(
+                                MythicalSpawner.TIME_SINCE_LEGENDARY_SPAWN.toLong()
+                            )
+                        )
+                        message = Placeholders.parseNodes(message, Placeholders.ALT_PLACEHOLDER_PATTERN_CUSTOM, placeholderMap)
+                        val component: Component = message.toText(PlaceholderContext.of(context.source.player).asParserContext(), true)
                         if (message != null) {
-                            context.source.sendSuccess(message, false)
+                            context.source.sendSuccess(component, false)
                         } else {
                             context.source.sendFailure(Component.literal("The message is formatted incorrectly."))
                         }
                     }
                     return@executes 1
                 }
+                dispatcher.register(lastLegend)
             }
         }
 

@@ -69,7 +69,6 @@ class MythicalSpawner : ModInitializer {
         CobblemonEvents.POKEMON_CAPTURED.subscribe { event: PokemonCapturedEvent ->
             val pokemon: Pokemon = event.pokemon
             if (LAST_LEGENDARY_SPAWNED != null) {
-                println("Last Legendary Spawned: ${LAST_LEGENDARY_SPAWNED!!.species.name}")
                 if (pokemon == LAST_LEGENDARY_SPAWNED) {
                     LAST_CAPTURED_TRAINER = event.player
                     LAST_CAPTURED_BIOME = Component.translatable(

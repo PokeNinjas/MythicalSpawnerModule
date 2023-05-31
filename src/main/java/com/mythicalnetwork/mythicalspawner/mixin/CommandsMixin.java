@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Commands.class)
 public class CommandsMixin {
-    @Redirect(at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;isDebugEnabled()Z"), method = "performCommand")
+    @Redirect(at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;isDebugEnabled()Z"), method = "performCommand", remap = false)
     public boolean redirectIsDebugEnabled(Logger instance) {
         return true;
     }

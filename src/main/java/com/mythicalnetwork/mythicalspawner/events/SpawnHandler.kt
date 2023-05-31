@@ -61,7 +61,6 @@ object SpawnHandler {
             )
             MythicalSpawner.LAST_LEGENDARY_SPAWNED = pokemonEntity.pokemon
             MythicalSpawner.LAST_CAPTURED_BIOME = Component.translatable(Util.makeDescriptionId("biome", level.getBiome(pokemonEntity.onPos).unwrapKey().get().location())).string
-            MythicalSpawner.TIME_SINCE_LEGENDARY_SPAWN = 0
             MythicalSpawner.LAST_CAPTURED_TRAINER = null
             MythicalSpawner.LOGGER.info(pokemonEntity.tags.toString())
             if(pokemonEntity.tags.contains("forced_spawn")){
@@ -71,6 +70,7 @@ object SpawnHandler {
                 placeholderMap["spawn_pokemon"] = Component.literal(pokemonEntity.pokemon.species.name)
                 placeholderMap["spawn_biome"] = Component.translatable(Util.makeDescriptionId("biome", level.getBiome(pokemonEntity.onPos).unwrapKey().get().location()))
                 placeholderMap["pokemon_aspects"] = Component.literal(parseAspects(pokemonEntity.pokemon.aspects.toString()))
+                placeholderMap["time_since_last_spawn"] = Component.literal(formatTime(MythicalSpawner.TIME_SINCE_LEGENDARY_SPAWN.toLong()))
                 message = Placeholders.parseNodes(message, Placeholders.ALT_PLACEHOLDER_PATTERN_CUSTOM, placeholderMap)
                 val component: Component = message.toText(PlaceholderContext.of(nearestPlayer).asParserContext(), true)
                 if (message != null) {
@@ -89,36 +89,31 @@ object SpawnHandler {
                     level.server?.playerList?.broadcastSystemMessage(component, false)
                 }
             }
+            MythicalSpawner.TIME_SINCE_LEGENDARY_SPAWN = 0
         }
     }
 
-    private fun parseAspects(aspects: String): String {
+     fun parseAspects(aspects: String): String {
         val builder = StringBuilder()
-        println("Aspects: $aspects")
         val asp = aspects.replace("[", "").replace("]", "")
-        println("Asp: $asp")
         asp.split(",").forEach { aspect ->
-            println("aspect: <$aspect>")
             if(aspect != " "){
                 var message = humanize(aspect)
-                println(message)
                 builder.append(message)
                 // check if the last character of aspect is whitespace using regex, if not, add a space
                 if (!builder.toString().matches(".*\\s".toRegex())) {
                     builder.append(" ")
                 }
-                println(builder.toString())
             }
         }
         return builder.toString()
     }
 
     private fun humanize(str: String): String {
-        println("Words: $str")
         val words = str.split("_")
         val builder = StringBuilder()
         words.forEach { w ->
-            var word = w.replace(" ", "")
+            var word = w.replace(" ", "").replace("mythical", "")
             if (!MythicalSpawner.CONFIG.spawnerFilteredAspects().contains(word.lowercase(Locale.getDefault()))) {
                 builder.append(word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }.replace("\\s".toRegex(), "."))
             }
@@ -176,6 +171,35 @@ object SpawnHandler {
                 }
             }
         }
+    }
+
+    fun formatTime(ticks: Long): String {
+        var totalSeconds = ticks / 20
+        // output format: 1d 2h 3m 4s. There are 20 ticks in a second.
+        // calculate days, hours, minutes, and remaining seconds
+        val days = totalSeconds / (60 * 60 * 24)
+        totalSeconds -= days * (60 * 60 * 24)
+        val hours = totalSeconds / (60 * 60)
+        totalSeconds -= hours * (60 * 60)
+        val minutes = totalSeconds / 60
+        totalSeconds -= minutes * 60
+        val seconds = totalSeconds
+        var builder = StringBuilder()
+        if (days > 0) {
+            builder.append(days).append("d ")
+        }
+        if (hours > 0) {
+            builder.append(hours).append("h ")
+        }
+        if (minutes > 0) {
+            builder.append(minutes).append("m ")
+        }
+        if (seconds > 0) {
+            builder.append(seconds).append("s")
+        }
+        // remove the space at the end
+        builder = StringBuilder(builder.toString().trim())
+        return builder.toString()
     }
 }
 
