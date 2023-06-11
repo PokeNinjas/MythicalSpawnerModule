@@ -31,8 +31,18 @@ object Dependencies {
         LUCKPERMS,
         FABRIC_PERMS_API,
         MODMENU,
-        PLACEHOLDERAPI,
-        GECKOLIB,
-        VEIL
+        PLACEHOLDERAPI
+    )
+
+    val DONT_INCLUDE = listOf<String>(
+        QUILT_KOTLIN_CORE,
+        QUILT_KOTLIN_LIBRARIES,
+        QUILT_LOADER,
+        QUILTED_FABRIC_API,
+        ARCHITECTURY,
+        COBBLEMON,
+        LUCKPERMS,
+        FABRIC_PERMS_API,
+        MODMENU
     )
 }

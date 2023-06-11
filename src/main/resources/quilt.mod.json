@@ -45,5 +45,6 @@
       }
     ]
   },
-  "mixin": "mythicalspawner.mixins.json"
+  "mixin": "mythicalspawner.mixins.json",
+  "access_widener": "mythicalspawner.accesswidener"
 }

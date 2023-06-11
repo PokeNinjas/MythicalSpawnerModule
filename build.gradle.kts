@@ -24,6 +24,7 @@ loom {
     interfaceInjection {
         enableDependencyInterfaceInjection.set(true)
     }
+    accessWidenerPath.set(file("src/main/resources/mythicalspawner.accesswidener"))
 }
 
 repositories {
@@ -41,7 +42,7 @@ dependencies {
         officialMojangMappings()
     })
     for(dep in Dependencies.CORE_DEPS){
-        if(dep.equals("owo-lib")){
+        if(Dependencies.DONT_INCLUDE.contains(dep)){
             modImplementation(dep)
         } else {
             include(dep)?.let {

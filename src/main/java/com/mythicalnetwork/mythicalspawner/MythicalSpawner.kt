@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.events.pokemon.PokemonCapturedEvent
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.logging.LogUtils
+import com.mythicalnetwork.mythicalspawner.chain.ChainManager
 import com.mythicalnetwork.mythicalspawner.events.ServerEvents
 import com.mythicalnetwork.mythicalspawner.events.SpawnHandler
 import com.mythicalnetwork.mythicalspawner.force.MythicalSpawnChanceData
@@ -25,6 +26,7 @@ import net.minecraft.server.packs.PackType
 import net.minecraft.world.entity.player.Player
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
+import org.quiltmc.qsl.lifecycle.api.event.ServerLifecycleEvents
 import java.util.*
 
 
@@ -42,6 +44,7 @@ class MythicalSpawner : ModInitializer {
         var LAST_CAPTURED_TRAINER: Player? = null
         var LAST_CAPTURED_BIOME: String? = null
         val CONFIG: MythicalSpawnerConfig = MythicalSpawnerConfig.createAndLoad()
+        var CHAIN_MANAGER: ChainManager? = null
     }
 
     override fun onInitialize(mod: ModContainer?) {
@@ -50,6 +53,9 @@ class MythicalSpawner : ModInitializer {
         ReloadListenerRegistry.register(PackType.SERVER_DATA, DefaultSpawnDataListener.INSTANCE)
         ReloadListenerRegistry.register(PackType.SERVER_DATA, MythicalSpawnChanceListener.INSTANCE)
         LOGGER.info("MythicalSpawner - Initialized")
+        ServerLifecycleEvents.READY.register { server ->
+            CHAIN_MANAGER = ChainManager(server.overworld())
+        }
         EntityEvent.ADD.register { entity, world ->
             if (world.isClientSide) return@register EventResult.pass()
             if (entity is PokemonEntity) {
@@ -62,6 +68,7 @@ class MythicalSpawner : ModInitializer {
         TickEvent.ServerLevelTick.SERVER_POST.register { server ->
             MythicalSpawnChanceData.tick(server)
             TIME_SINCE_LEGENDARY_SPAWN++
+            CHAIN_MANAGER?.tick(server.overworld())
         }
 
         ServerEvents.init()
@@ -79,6 +86,18 @@ class MythicalSpawner : ModInitializer {
                     ).string
 
                 }
+            }
+            CHAIN_MANAGER?.getChainData(event.player.uuid)?.let { chain ->
+                if(chain.getChainedPokemon() == pokemon.species.resourceIdentifier.path){
+                    chain.handleCapture(event.pokemon)
+                } else {
+                    chain.resetChain()
+                    chain.setChainedPokemon(pokemon.species.resourceIdentifier.path)
+                    chain.setPrettyName(pokemon.species.name.toString())
+                }
+            } ?: CHAIN_MANAGER?.addChain(event.player.uuid).also { chain ->
+                chain?.setChainedPokemon(pokemon.species.resourceIdentifier.path)
+                chain?.setPrettyName(pokemon.species.name.toString())
             }
         }
         setupPlaceholders()

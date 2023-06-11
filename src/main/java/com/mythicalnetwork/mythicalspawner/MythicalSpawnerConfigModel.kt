@@ -24,4 +24,14 @@ class MythicalSpawnerConfigModel {
     var spawnerFilteredAspects: ArrayList<String> = arrayListOf("genderless", "male", "female")
     @JvmField
     var announcedSpecies: ArrayList<String> = arrayListOf("ironvaliant")
+    @JvmField
+    var chainTimeoutHours: Int = 2
+    @JvmField
+    var chainIncreaseMessage: String = "<gold>[Mythical] <c:#e38fd8>{player} has achieved a {pokemon} chain of {chain}!"
+    @JvmField
+    var shinyCatchComboRates: String = "0-10: 4096, 11-20: 1024, 21-30: 512, 31-999: 341.3"
+    @JvmField
+    var shinySpawnAttemptDelay: Int = 10
+    @JvmField
+    var ivRangeValues: String = "0-5: 0, 6-10: 1, 11-20: 2, 21-30: 3, 31-999: 4"
 }
