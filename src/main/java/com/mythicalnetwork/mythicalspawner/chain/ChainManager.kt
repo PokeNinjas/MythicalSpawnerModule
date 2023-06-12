@@ -12,6 +12,14 @@ class ChainManager(var LEVEL: ServerLevel) {
         val IV_RATES: Map<IntRange, Int> = formatIvRangeValues()
     }
 
+    fun printUsers(): String {
+        var string = ""
+        for (user in users) {
+            string += user.getPlayer().toString() + "\n"
+        }
+        return string
+    }
+
     fun tick(level: ServerLevel) {
         for (chain in users) {
             chain.tick(level)

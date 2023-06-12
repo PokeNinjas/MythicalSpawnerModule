@@ -5,6 +5,8 @@ import com.cobblemon.mod.common.api.pokemon.PokemonSpecies
 import com.cobblemon.mod.common.api.pokemon.stats.Stat
 import com.cobblemon.mod.common.api.pokemon.stats.StatProvider
 import com.cobblemon.mod.common.api.pokemon.stats.Stats
+import com.cobblemon.mod.common.api.spawning.CobblemonSpawnPools
+import com.cobblemon.mod.common.api.spawning.detail.PokemonSpawnDetail
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.cobblemon.mod.common.pokemon.PokemonStats
@@ -61,12 +63,14 @@ class ChainUser(private val player: UUID, private var chain: Int = 0, private va
                         val player: Player = level.getPlayerByUUID(player)!!
                         val pokemon: Pokemon =
                             PokemonSpecies.getByName(chainedPokemon.toLowerCase().replace(" ", ""))!!.create()
+//                        CobblemonSpawnPools.WORLD_SPAWN_POOL.details.stream().map { s -> s is PokemonSpawnDetail }.toList().stream().map { ps -> (ps as PokemonSpawnDetail).conditions.forEach { c -> c.biomes.filter { b -> b. } } }
                         pokemon.shiny = true
                         val pokemonEntity: PokemonEntity = PokemonEntity(level, pokemon)
                         val spawnPos: BlockPos? =
                             checkSpawnConditions(pokemonEntity, false, false, true, player.onPos, level)
                         if (spawnPos != null) {
                             pokemonEntity.setPos(spawnPos.x.toDouble(), spawnPos.y.toDouble(), spawnPos.z.toDouble())
+                            handleStatIncrease(pokemonEntity.pokemon)
                             level.addFreshEntity(pokemonEntity)
                         }
                     }
@@ -76,21 +80,21 @@ class ChainUser(private val player: UUID, private var chain: Int = 0, private va
     }
 
     fun handleCapture(pokemon: Pokemon) {
-        if (pokemon.species.resourceIdentifier.path == chainedPokemon) {
+        if (pokemon.species.resourceIdentifier.path == chainedPokemon && chain < MythicalSpawner.CONFIG.chainLengthCap()) {
             incrementChain()
-            for (range in ChainManager.IV_RATES.keys) {
-                if (chain in range) {
-                    pokemon.ivs = Cobblemon.statProvider.createEmptyIVs(ChainManager.IV_RATES[range]!!)
-                }
-            }
+            handleStatIncrease(pokemon)
         } else {
             newChain(pokemon.species.resourceIdentifier.path)
         }
     }
 
     // modify stats of pokemon on capture
-    fun handleStatIncrease(pokemon: PokemonEntity) {
-
+    fun handleStatIncrease(pokemon: Pokemon) {
+        for (range in ChainManager.IV_RATES.keys) {
+            if (chain in range) {
+                pokemon.ivs = Cobblemon.statProvider.createEmptyIVs(ChainManager.IV_RATES[range]!!)
+            }
+        }
     }
 
 

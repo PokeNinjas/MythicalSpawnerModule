@@ -34,4 +34,6 @@ class MythicalSpawnerConfigModel {
     var shinySpawnAttemptDelay: Int = 10
     @JvmField
     var ivRangeValues: String = "0-5: 0, 6-10: 1, 11-20: 2, 21-30: 3, 31-999: 4"
+    @JvmField
+    var chainLengthCap: Int = 50
 }
