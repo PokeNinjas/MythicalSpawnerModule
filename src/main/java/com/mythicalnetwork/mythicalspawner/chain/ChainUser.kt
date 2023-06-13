@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.api.pokemon.stats.Stat
 import com.cobblemon.mod.common.api.pokemon.stats.StatProvider
 import com.cobblemon.mod.common.api.pokemon.stats.Stats
 import com.cobblemon.mod.common.api.spawning.CobblemonSpawnPools
+import com.cobblemon.mod.common.api.spawning.CobblemonWorldSpawnerManager
 import com.cobblemon.mod.common.api.spawning.detail.PokemonSpawnDetail
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
 import com.cobblemon.mod.common.pokemon.Pokemon
@@ -32,6 +33,7 @@ class ChainUser(private val player: UUID, private var chain: Int = 0, private va
         (startTime.clone() as Date).also { it.hours += MythicalSpawner.CONFIG.chainTimeoutHours() }
     private var lastShinyAttempt: Date? = null
     private var chainedPokemonPrettyName: String = ""
+    var toRemove: Boolean = false
 
     companion object {
         fun onComplete(action: (ChainUser) -> Unit, chainUser: ChainUser) {
@@ -57,13 +59,22 @@ class ChainUser(private val player: UUID, private var chain: Int = 0, private va
             for (range in ChainManager.SHINY_RATES.keys) {
                 if (chain in range) {
                     val rand = Math.random().toFloat()
-                    val comp = rand <= 1 / ChainManager.SHINY_RATES[range]!!
+                    var chainRange = ChainManager.SHINY_RATES[range]
+                    if (chainRange == null) chainRange = 0.0f
+                    val comp = rand <= 1 / chainRange
                     if (comp) {
                         // spawn shiny
-                        val player: Player = level.getPlayerByUUID(player)!!
+                        val player: Player? = level.getPlayerByUUID(player)
+                        if(player == null) {
+                            toRemove = true
+                            return
+                        }
                         val pokemon: Pokemon =
                             PokemonSpecies.getByName(chainedPokemon.toLowerCase().replace(" ", ""))!!.create()
 //                        CobblemonSpawnPools.WORLD_SPAWN_POOL.details.stream().map { s -> s is PokemonSpawnDetail }.toList().stream().map { ps -> (ps as PokemonSpawnDetail).conditions.forEach { c -> c.biomes.filter { b -> b. } } }
+//                        CobblemonWorldSpawnerManager.spawnersForPlayers[this.player]?.influences?.forEach { influence ->
+//                            influence.
+//                        }
                         pokemon.shiny = true
                         val pokemonEntity: PokemonEntity = PokemonEntity(level, pokemon)
                         val spawnPos: BlockPos? =
@@ -114,7 +125,7 @@ class ChainUser(private val player: UUID, private var chain: Int = 0, private va
         val component: Component =
             message.toText(PlaceholderContext.of(MythicalSpawner.CHAIN_MANAGER?.LEVEL?.server).asParserContext(), true)
         if (message != null) {
-            MythicalSpawner.CHAIN_MANAGER?.LEVEL?.server?.playerList?.broadcastSystemMessage(component, false)
+            MythicalSpawner.CHAIN_MANAGER?.LEVEL?.getPlayerByUUID(player)?.sendSystemMessage(component)
         }
     }
 

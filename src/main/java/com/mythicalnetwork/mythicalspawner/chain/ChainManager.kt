@@ -7,6 +7,7 @@ import java.util.UUID
 
 class ChainManager(var LEVEL: ServerLevel) {
     private var users: MutableList<ChainUser> = mutableListOf()
+    private var toRemove: MutableList<ChainUser> = mutableListOf()
     companion object {
         val SHINY_RATES: Map<IntRange, Float> = formatShinyCatchComboRates()
         val IV_RATES: Map<IntRange, Int> = formatIvRangeValues()
@@ -21,8 +22,15 @@ class ChainManager(var LEVEL: ServerLevel) {
     }
 
     fun tick(level: ServerLevel) {
+        toRemove.clear()
         for (chain in users) {
             chain.tick(level)
+            if(chain.toRemove){
+                toRemove.add(chain)
+            }
+        }
+        for (chain in toRemove) {
+            removeChain(chain)
         }
     }
 
