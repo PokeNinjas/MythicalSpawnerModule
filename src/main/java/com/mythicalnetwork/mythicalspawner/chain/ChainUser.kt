@@ -47,7 +47,8 @@ class ChainUser(private val player: UUID, private var chain: Int = 0, private va
 
     fun tick(level: ServerLevel) {
         if (Date().after(endTime)) {
-            onComplete({ user -> MythicalSpawner.CHAIN_MANAGER?.removeChain(user) }, this)
+            toRemove = true
+            return
         }
         if (lastShinyAttempt == null) {
             lastShinyAttempt =
