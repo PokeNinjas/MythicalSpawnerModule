@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mythicalnetwork.mythicalspawner.spawner.AbilityModifierDataHolder
 import com.mythicalnetwork.mythicalspawner.MythicalSpawner
 import com.mythicalnetwork.mythicalspawner.spawner.SpawnerDataHolder
+import com.pokeninjas.kingdoms.common.redis.event.impl.backend.BroadcastMessageEvent
 import eu.pb4.placeholders.api.PlaceholderContext
 import eu.pb4.placeholders.api.Placeholders
 import eu.pb4.placeholders.api.TextParserUtils
@@ -74,7 +75,7 @@ object SpawnHandler {
                 message = Placeholders.parseNodes(message, Placeholders.ALT_PLACEHOLDER_PATTERN_CUSTOM, placeholderMap)
                 val component: Component = message.toText(PlaceholderContext.of(nearestPlayer).asParserContext(), true)
                 if (message != null) {
-                    level.server?.playerList?.broadcastSystemMessage(component, false)
+                    BroadcastMessageEvent(Component.Serializer.toJson(component)).send()
                 }
             } else {
                 var message: TextNode? = TextParserUtils.formatNodes(MythicalSpawner.CONFIG.chanceSpawnMessage())
@@ -86,7 +87,7 @@ object SpawnHandler {
                 message = Placeholders.parseNodes(message, Placeholders.ALT_PLACEHOLDER_PATTERN_CUSTOM, placeholderMap)
                 val component: Component = message.toText(PlaceholderContext.of(nearestPlayer).asParserContext(), true)
                 if (message != null) {
-                    level.server?.playerList?.broadcastSystemMessage(component, false)
+                    BroadcastMessageEvent(Component.Serializer.toJson(component)).send()
                 }
             }
             MythicalSpawner.TIME_SINCE_LEGENDARY_SPAWN = 0
@@ -129,36 +130,30 @@ object SpawnHandler {
             data.area.ifPresent { area ->
                 val pos = pokemonEntity.onPos
                 if (pos.x < area.first.x || pos.x > area.second.x || pos.y < area.first.y || pos.y > area.second.y || pos.z < area.first.z || pos.z > area.second.z) {
-                    MythicalSpawner.LOGGER.info("Not in area: ${area.first} ${area.second} $pos for ${pokemon.species.name}")
                     shouldModify = false
                 }
             }
             data.dimension.ifPresent { dimension ->
                 if (pokemonEntity.level.dimension().toString() != dimension) {
-                    MythicalSpawner.LOGGER.info("Not in dimension: $dimension for ${pokemon.species.name}")
                     shouldModify = false
                 }
             }
             data.biome.ifPresent { biome ->
                 if (pokemonEntity.level.getBiome(pokemonEntity.onPos).unwrapKey().get().toString() != biome) {
-                    MythicalSpawner.LOGGER.info("Not in biome: $biome for ${pokemon.species.name}")
                     shouldModify = false
                 }
             }
             data.time.ifPresent { time ->
                 val timeOfDay = pokemonEntity.level.dayTime
                 if (timeOfDay < time.first || timeOfDay > time.second) {
-                    MythicalSpawner.LOGGER.info("Not in time: ${time.first} ${time.second} $timeOfDay for ${pokemon.species.name}")
                     shouldModify = false
                 }
             }
             data.weather.ifPresent { weather ->
                 if (pokemonEntity.level.isRaining && weather != "rain") {
-                    MythicalSpawner.LOGGER.info("Not in weather: $weather for ${pokemon.species.name}")
                     shouldModify = false
                 }
                 if (pokemonEntity.level.isThundering && weather != "thunder") {
-                    MythicalSpawner.LOGGER.info("Not in weather: $weather for ${pokemon.species.name}")
                     shouldModify = false
                 }
             }
