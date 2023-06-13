@@ -160,4 +160,14 @@ class ChainUser(private val player: UUID, private var chain: Int = 0, private va
     fun setChain(chain: Int) {
         this.chain = chain
     }
+
+    fun getChainMultiplier(): Float {
+        var multiplier = 1.0f
+        for (range in ChainManager.MULTIPLIER_RATES.keys) {
+            if (chain in range) {
+                multiplier = ChainManager.MULTIPLIER_RATES[range]!!
+            }
+        }
+        return multiplier
+    }
 }

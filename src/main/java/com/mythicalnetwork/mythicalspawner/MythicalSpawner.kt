@@ -2,10 +2,12 @@ package com.mythicalnetwork.mythicalspawner
 
 import com.cobblemon.mod.common.api.events.CobblemonEvents
 import com.cobblemon.mod.common.api.events.pokemon.PokemonCapturedEvent
+import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
 import com.cobblemon.mod.common.pokemon.Pokemon
 import com.mojang.logging.LogUtils
 import com.mythicalnetwork.mythicalspawner.chain.ChainManager
+import com.mythicalnetwork.mythicalspawner.chain.ChainSpawningInfluence
 import com.mythicalnetwork.mythicalspawner.events.ServerEvents
 import com.mythicalnetwork.mythicalspawner.events.SpawnHandler
 import com.mythicalnetwork.mythicalspawner.force.MythicalSpawnChanceData
@@ -15,6 +17,7 @@ import com.mythicalnetwork.mythicalspawner.spawner.MythicalSpawnerAbilityListene
 import com.mythicalnetwork.mythicalspawner.spawner.MythicalSpawnerJsonListener
 import dev.architectury.event.EventResult
 import dev.architectury.event.events.common.EntityEvent
+import dev.architectury.event.events.common.PlayerEvent.PlayerJoin
 import dev.architectury.event.events.common.TickEvent
 import dev.architectury.registry.ReloadListenerRegistry
 import eu.pb4.placeholders.api.PlaceholderResult
@@ -27,6 +30,7 @@ import net.minecraft.world.entity.player.Player
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
 import org.quiltmc.qsl.lifecycle.api.event.ServerLifecycleEvents
+import org.quiltmc.qsl.networking.api.ServerPlayConnectionEvents
 import java.util.*
 
 
@@ -69,6 +73,10 @@ class MythicalSpawner : ModInitializer {
             MythicalSpawnChanceData.tick(server)
             TIME_SINCE_LEGENDARY_SPAWN++
             CHAIN_MANAGER?.tick(server.overworld())
+        }
+
+        ServerPlayConnectionEvents.JOIN.register { handler, sender, server ->
+            PlayerSpawnerFactory.influenceBuilders.add { player -> ChainSpawningInfluence(player.uuid)}
         }
 
         ServerEvents.init()

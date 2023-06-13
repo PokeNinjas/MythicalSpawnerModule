@@ -25,7 +25,7 @@ object Dependencies {
         QUILT_LOADER,
         QUILTED_FABRIC_API,
         ARCHITECTURY,
-        COBBLEMON,
+//        COBBLEMON,
         OWOLIB,
         OWOSENTINEL,
         LUCKPERMS,

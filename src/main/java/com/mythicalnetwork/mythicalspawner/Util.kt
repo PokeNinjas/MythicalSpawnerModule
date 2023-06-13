@@ -78,6 +78,22 @@ fun formatIvRangeValues(): Map<IntRange, Int> {
     return ivMap
 }
 
+fun formatMultiplierRates(): Map<IntRange, Float> {
+    val rates: String = MythicalSpawner.CONFIG.catchComboRareSpawnRates()
+    val rateSubString = rates.split(",")
+    val rateMap: MutableMap<IntRange, Float> = mutableMapOf()
+    for (rate in rateSubString) {
+        rate.replace(" ", "")
+        val rateSplit = rate.split(":")
+        val rateRange = rateSplit[0].replace(" ", "").split("-")
+        val rateStart = rateRange[0].replace(" ", "").toInt()
+        val rateEnd = rateRange[1].replace(" ", "").toInt()
+        val rateValue = rateSplit[1].replace(" ", "").toFloat()
+        rateMap[rateStart..rateEnd] = rateValue
+    }
+    return rateMap
+}
+
 fun checkSpawnConditions(
     pokemon: PokemonEntity,
     canSwim: Boolean,

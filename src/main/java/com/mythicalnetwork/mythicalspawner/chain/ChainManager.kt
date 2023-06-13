@@ -1,6 +1,7 @@
 package com.mythicalnetwork.mythicalspawner.chain
 
 import com.mythicalnetwork.mythicalspawner.formatIvRangeValues
+import com.mythicalnetwork.mythicalspawner.formatMultiplierRates
 import com.mythicalnetwork.mythicalspawner.formatShinyCatchComboRates
 import net.minecraft.server.level.ServerLevel
 import java.util.UUID
@@ -9,6 +10,7 @@ class ChainManager(var LEVEL: ServerLevel) {
     private var users: MutableList<ChainUser> = mutableListOf()
     private var toRemove: MutableList<ChainUser> = mutableListOf()
     companion object {
+        val MULTIPLIER_RATES: Map<IntRange, Float> = formatMultiplierRates()
         val SHINY_RATES: Map<IntRange, Float> = formatShinyCatchComboRates()
         val IV_RATES: Map<IntRange, Int> = formatIvRangeValues()
     }

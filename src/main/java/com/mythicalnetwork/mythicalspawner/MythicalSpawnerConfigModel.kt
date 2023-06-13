@@ -36,4 +36,6 @@ class MythicalSpawnerConfigModel {
     var ivRangeValues: String = "0-5: 0, 6-10: 1, 11-20: 2, 21-30: 3, 31-999: 4"
     @JvmField
     var chainLengthCap: Int = 50
+    @JvmField
+    var catchComboRareSpawnRates: String = "0-5: 1.15, 6-10: 1.75, 11-20: 2.5, 21-30: 3.5, 31-999: 5"
 }

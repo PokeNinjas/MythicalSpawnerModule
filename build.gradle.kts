@@ -58,6 +58,7 @@ dependencies {
     }
     testImplementation(Dependencies.JUNIT_JUPITER_API)
     testRuntimeOnly(Dependencies.JUNIT_JUPITER_ENGINE)
+    modImplementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
 
 tasks.getByName<Test>("test") {
