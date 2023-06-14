@@ -59,7 +59,6 @@ class MythicalSpawnChanceData(
                 SpawnHandler.handleCustomSpawns(pokemonEntity, pokemonEntity.pokemon)
                 randomPlayerEntity.level.addFreshEntity(pokemonEntity)
                 FORCED_LAST_SPAWN = true
-                MythicalSpawner.LOGGER.info("Spawned ${randomSpecies.species.name} at $randomPosition with aspects: ${pokemonEntity.pokemon.aspects}")
             } else {
                 CURRENT_TIMER--
                 FORCED_LAST_SPAWN = false
