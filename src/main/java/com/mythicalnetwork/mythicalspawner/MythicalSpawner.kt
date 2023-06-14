@@ -15,6 +15,7 @@ import com.mythicalnetwork.mythicalspawner.force.MythicalSpawnChanceListener
 import com.mythicalnetwork.mythicalspawner.spawner.DefaultSpawnDataListener
 import com.mythicalnetwork.mythicalspawner.spawner.MythicalSpawnerAbilityListener
 import com.mythicalnetwork.mythicalspawner.spawner.MythicalSpawnerJsonListener
+import com.pokeninjas.kingdoms.fabric.Kingdoms
 import dev.architectury.event.EventResult
 import dev.architectury.event.events.common.EntityEvent
 import dev.architectury.event.events.common.PlayerEvent.PlayerJoin
@@ -49,6 +50,7 @@ class MythicalSpawner : ModInitializer {
         var LAST_CAPTURED_BIOME: String? = null
         val CONFIG: MythicalSpawnerConfig = MythicalSpawnerConfig.createAndLoad()
         var CHAIN_MANAGER: ChainManager? = null
+
     }
 
     override fun onInitialize(mod: ModContainer?) {

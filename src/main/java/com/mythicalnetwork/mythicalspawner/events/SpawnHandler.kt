@@ -3,6 +3,7 @@ package com.mythicalnetwork.mythicalspawner.events
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity
 import com.cobblemon.mod.common.pokemon.Pokemon
+import com.mythicalnetwork.mythicalspawner.KingdomsHandler
 import com.mythicalnetwork.mythicalspawner.spawner.AbilityModifierDataHolder
 import com.mythicalnetwork.mythicalspawner.MythicalSpawner
 import com.mythicalnetwork.mythicalspawner.spawner.SpawnerDataHolder
@@ -11,10 +12,12 @@ import eu.pb4.placeholders.api.PlaceholderContext
 import eu.pb4.placeholders.api.Placeholders
 import eu.pb4.placeholders.api.TextParserUtils
 import eu.pb4.placeholders.api.node.TextNode
+import net.fabricmc.loader.FabricLoader
 import net.minecraft.Util
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
+import org.quiltmc.loader.api.QuiltLoader
 import java.util.*
 
 object SpawnHandler {
@@ -75,7 +78,11 @@ object SpawnHandler {
                 message = Placeholders.parseNodes(message, Placeholders.ALT_PLACEHOLDER_PATTERN_CUSTOM, placeholderMap)
                 val component: Component = message.toText(PlaceholderContext.of(nearestPlayer).asParserContext(), true)
                 if (message != null) {
-                    BroadcastMessageEvent(Component.Serializer.toJson(component)).send()
+                    if(QuiltLoader.getModContainer("kingdoms").isPresent){
+                        KingdomsHandler.broadcastCrossServerMessage(Component.Serializer.toJson(component))
+                    } else {
+                        level.server?.playerList?.broadcastSystemMessage(component, false)
+                    }
                 }
             } else {
                 var message: TextNode? = TextParserUtils.formatNodes(MythicalSpawner.CONFIG.chanceSpawnMessage())
@@ -87,7 +94,11 @@ object SpawnHandler {
                 message = Placeholders.parseNodes(message, Placeholders.ALT_PLACEHOLDER_PATTERN_CUSTOM, placeholderMap)
                 val component: Component = message.toText(PlaceholderContext.of(nearestPlayer).asParserContext(), true)
                 if (message != null) {
-                    BroadcastMessageEvent(Component.Serializer.toJson(component)).send()
+                    if(QuiltLoader.isModLoaded("kingdoms")){
+                        KingdomsHandler.broadcastCrossServerMessage(Component.Serializer.toJson(component))
+                    } else {
+                        level.server?.playerList?.broadcastSystemMessage(component, false)
+                    }
                 }
             }
             MythicalSpawner.TIME_SINCE_LEGENDARY_SPAWN = 0
