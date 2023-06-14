@@ -15,7 +15,9 @@ class ChainSpawningInfluence(var player: UUID) : SpawningInfluence {
         if(bucket.name.contains("rare")){
             MythicalSpawner.CHAIN_MANAGER?.let { chainManager ->
                 val chainData = chainManager.getChainData(this.player)
+                MythicalSpawner.LOGGER.info("Testing chain data for bucket weight!")
                 if (chainData != null) {
+                    MythicalSpawner.LOGGER.info("Bucket: ${bucket.name} Chain data is not null! Weight: ${weight * chainData.getChainMultiplier()}")
                     return weight * chainData.getChainMultiplier()
                 } else {
                     return weight
@@ -27,6 +29,7 @@ class ChainSpawningInfluence(var player: UUID) : SpawningInfluence {
 
     override fun affectSpawn(entity: Entity) {
         if(entity is PokemonEntity){
+            MythicalSpawner.LOGGER.info("Testing chain data to spawn ${entity.pokemon.species.name.toString()}!")
         }
         super.affectSpawn(entity)
     }

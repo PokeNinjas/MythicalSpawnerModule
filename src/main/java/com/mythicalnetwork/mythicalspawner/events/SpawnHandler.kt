@@ -46,6 +46,7 @@ object SpawnHandler {
         if(shouldModify){
             if(Math.random() < data.chance){
                 PokemonProperties.parse("hiddenability").apply(pokemon)
+                MythicalSpawner.LOGGER.info("Adding hidden ability to ${pokemon.species.name} at location ${pokemonEntity.onPos}")
             }
         }
     }
@@ -62,6 +63,7 @@ object SpawnHandler {
             MythicalSpawner.LAST_LEGENDARY_SPAWNED = pokemonEntity.pokemon
             MythicalSpawner.LAST_CAPTURED_BIOME = Component.translatable(Util.makeDescriptionId("biome", level.getBiome(pokemonEntity.onPos).unwrapKey().get().location())).string
             MythicalSpawner.LAST_CAPTURED_TRAINER = null
+            MythicalSpawner.LOGGER.info(pokemonEntity.tags.toString())
             if(pokemonEntity.tags.contains("forced_spawn")){
                 var message: TextNode? = TextParserUtils.formatNodes(MythicalSpawner.CONFIG.forcedSpawnMessage())
                 val placeholderMap: HashMap<String, Component> = HashMap()
@@ -159,6 +161,7 @@ object SpawnHandler {
                 data.aspects.forEach() { aspect ->
                     if (Math.random() < aspect.chance) {
                         PokemonProperties.parse(aspect.aspect).apply(pokemon)
+                        MythicalSpawner.LOGGER.debug("Adding aspect: ${aspect.aspect} to ${pokemon.species.name} at location ${pokemonEntity.onPos}")
                     }
                 }
             }

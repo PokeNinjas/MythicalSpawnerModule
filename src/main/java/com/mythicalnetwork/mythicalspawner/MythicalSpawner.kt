@@ -107,6 +107,7 @@ class MythicalSpawner : ModInitializer {
                 chain?.setChainedPokemon(pokemon.species.resourceIdentifier.path)
                 chain?.setPrettyName(pokemon.species.name.toString())
             }
+            CHAIN_MANAGER?.let { chainManager -> LOGGER.error(chainManager.printUsers()) }
         }
         setupPlaceholders()
         MythicalSpawnerCommands.registerCommands()
